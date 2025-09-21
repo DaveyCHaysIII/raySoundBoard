@@ -1,2 +1,26 @@
 # raySoundBoard
 A simple soundboard implemented in c++ with RAYLIB and RAYGUI
+
+v 0.01 - proof of concept edition
+- copy sounds you'd like to use into the resource folder in the same directory as raySoundBoard
+- write file paths directly into the .cpp file (or possibly the accompanying .h?)
+
+todos:
+- make data layer (probably .json for ease of use)
+- make music player with seek, cross fade, LPF
+- make releases with github actions for cross platform use
+- include raylib and raygui libraries into src for enhanced portability
+- work on design
+
+the current implementation is made for LINUX
+
+Dependencies (currently)
+- raylib
+- raygui
+- gcc
+
+once installed, you can compile using the following command:
+
+g++ raySoundBoard.c -lraylib -lm -o raySoundBoard
+
+
