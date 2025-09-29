@@ -12,18 +12,12 @@ struct SoundData {
 	bool loaded;
 };
 
-struct soundSlot {
-	int active;
-	bool dropdown;
-};
-
 
 int main()
 {
 	InitWindow(1200, 1000, "raySoundBoard");
 	InitAudioDevice();
 
-	//all our data
 	std::vector<SoundData> sounds = {
 		{"Howl", "resources/howl.mp3", {}, false},
 		{"thunderclap", "resources/thunderclap.mp3", {}, false},
@@ -45,49 +39,26 @@ int main()
 		{"wilhelm", "resources/wilhelm.mp3", {}, false},
 		{"womanscream", "resources/womanscream.mp3", {}, false}
 	};
-	std::vector<soundSlot> soundSlots(15, {0, false});
+
 	const char* selection_string = "Howl;Thunder;priceisright;laughter;lizard;buffy;rimshot;careless_whisper;chosen;consequences;ohmaigaa;OHMYGOD;riser;roundabout;slidewhistle;suspense_1;theremin;wilhelm;womanscream";
-	bool aimeemode = false; 
+	int active = 0;
+	bool dropdown = false;
 
-	//loads all sounds into memory at startup
-	for (int i = 0; i < sounds.size(); i++) {
-		sounds[i].sound = LoadSound(sounds[i].path.c_str());
-		sounds[i].loaded = true;
-	}
 
-	for (int i = 0; i < soundSlots.size(); i++) {
-		soundSlots[i].active = i;
-	}
-	//main loop
 	while(!WindowShouldClose())
 	{
 		BeginDrawing();
 		ClearBackground(RAYWHITE);
-
-		if (aimeemode) {
-			for (int i = 0; i < soundSlots.size(); i++) {
-				soundSlots[i].active = 4; // Set all slots to "lizard"
-			};
+		if (GuiDropdownBox((Rectangle){50,50,100,40}, selection_string, &active, dropdown))
+		{
+			if(sounds[active].loaded) UnloadSound(sounds[active].sound);
+			sounds[active].sound = LoadSound(sounds[active].path.c_str());
+			sounds[active].loaded = true;
+			dropdown = !dropdown;
 		}
-
-		//Buttons and dropdowns and sounds logic
-		for (int i = 0; i < soundSlots.size(); i++) {
-				int col = i % 5;
-				int row = i / 5;
-
-    			float x = 50 + row + row * 240;
-    			float y = 50 + col * 60;
-
-    			if (GuiDropdownBox((Rectangle){x, y, 100, 40}, selection_string, &soundSlots[i].active, soundSlots[i].dropdown)) {
-        			soundSlots[i].dropdown = !soundSlots[i].dropdown;
-    			}
-
-    			if (GuiButton((Rectangle){x + 110, y, 100, 40}, sounds[soundSlots[i].active].label.c_str())) {
-        			PlaySound(sounds[soundSlots[i].active].sound);
-    			}
-		}
-		if (GuiCheckBox((Rectangle){800, 400, 20, 20}, "Aimee Mode", &aimeemode)) {
-			// Toggle Aimee Mode
+		if (GuiButton((Rectangle){160,50,100,40}, sounds[active].label.c_str()))
+		{
+			PlaySound(sounds[active].sound);
 		}
 
 		EndDrawing();
