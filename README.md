@@ -12,6 +12,10 @@ todos:
 - include raylib and raygui libraries into src for enhanced portability
 - work on design
 
+**note: since there doesn't seem to be any zed functionality, it might be better to hard code 
+**the sound effects buttons, since the dropdowns all get written over visually. Remove
+**checkboxes entirely and simplify the implementation. 
+
 the current implementation is made for LINUX
 
 Dependencies (currently)

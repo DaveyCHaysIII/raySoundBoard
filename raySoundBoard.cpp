@@ -5,6 +5,8 @@
 #include <vector>
 #include <utility>
 
+#define RAYBLACK      (Color){ 20, 20, 20, 255 }        // Black
+
 struct SoundData {
 	std::string label;
 	std::string path;
@@ -20,7 +22,7 @@ struct soundSlot {
 
 int main()
 {
-	InitWindow(1200, 1000, "raySoundBoard");
+	InitWindow(800, 600, "raySoundBoard");
 	InitAudioDevice();
 
 	//all our data
@@ -29,7 +31,7 @@ int main()
 		{"thunderclap", "resources/thunderclap.mp3", {}, false},
 		{"priceisright", "resources/priceisright.mp3", {}, false},
 		{"laughter", "resources/laughter.mp3", {}, false},
-		{"lizard", "resources/lizard.mp3", {}, false},
+		{"wilhelm", "resources/wilhelm.mp3", {}, false},
 		{"buffy", "resources/buffy.mp3", {}, false},
 		{"rimshot", "resources/rimshot.mp3", {}, false},
 		{"careless_whisper", "resources/careless_whisper.mp3", {}, false},
@@ -42,11 +44,11 @@ int main()
 		{"slidewhistle", "resources/slidewhistle.mp3", {}, false},
 		{"suspense_1", "resources/suspense_1.mp3", {}, false},
 		{"theremin", "resources/theremin.mp3", {}, false},
-		{"wilhelm", "resources/wilhelm.mp3", {}, false},
+		{"lizard", "resources/lizard.mp3", {}, false},
 		{"womanscream", "resources/womanscream.mp3", {}, false}
 	};
 	std::vector<soundSlot> soundSlots(15, {0, false});
-	const char* selection_string = "Howl;Thunder;priceisright;laughter;lizard;buffy;rimshot;careless_whisper;chosen;consequences;ohmaigaa;OHMYGOD;riser;roundabout;slidewhistle;suspense_1;theremin;wilhelm;womanscream";
+	const char* selection_string = "Howl;Thunder;priceisright;laughter;wilhelm;buffy;rimshot;careless_whisper;chosen;consequences;ohmaigaa;OHMYGOD;riser;roundabout;slidewhistle;suspense_1;theremin;lizard;womanscream";
 	bool aimeemode = false; 
 
 	//loads all sounds into memory at startup
@@ -62,11 +64,11 @@ int main()
 	while(!WindowShouldClose())
 	{
 		BeginDrawing();
-		ClearBackground(RAYWHITE);
+		ClearBackground(RAYBLACK);
 
 		if (aimeemode) {
 			for (int i = 0; i < soundSlots.size(); i++) {
-				soundSlots[i].active = 4; // Set all slots to "lizard"
+				soundSlots[i].active = 17; // Set all slots to "lizard"
 			};
 		}
 
@@ -86,7 +88,7 @@ int main()
         			PlaySound(sounds[soundSlots[i].active].sound);
     			}
 		}
-		if (GuiCheckBox((Rectangle){800, 400, 20, 20}, "Aimee Mode", &aimeemode)) {
+		if (GuiCheckBox((Rectangle){660, 350, 20, 20}, "Aimee Mode", &aimeemode)) {
 			// Toggle Aimee Mode
 		}
 
