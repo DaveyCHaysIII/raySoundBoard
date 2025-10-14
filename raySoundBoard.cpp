@@ -22,7 +22,7 @@ struct soundSlot {
 
 int main()
 {
-	InitWindow(800, 600, "raySoundBoard");
+	InitWindow(1600, 1000, "raySoundBoard");
 	InitAudioDevice();
 
 	//all our data
@@ -48,8 +48,12 @@ int main()
 		{"womanscream", "resources/womanscream.mp3", {}, false}
 	};
 	std::vector<soundSlot> soundSlots(15, {0, false});
+	Music music = LoadMusicStream("resources/Beethovenstrqrt4cminor.mp3");
+	float music_volume = 0.5;
+	SetMusicVolume(music, music_volume);
+	bool music_started = false;
 	const char* selection_string = "Howl;Thunder;priceisright;laughter;wilhelm;buffy;rimshot;careless_whisper;chosen;consequences;ohmaigaa;OHMYGOD;riser;roundabout;slidewhistle;suspense_1;theremin;lizard;womanscream";
-	bool aimeemode = false; 
+	bool aimeemode = false;
 
 	//loads all sounds into memory at startup
 	for (int i = 0; i < sounds.size(); i++) {
@@ -65,32 +69,74 @@ int main()
 	{
 		BeginDrawing();
 		ClearBackground(RAYBLACK);
+		UpdateMusicStream(music);
 
 		if (aimeemode) {
 			for (int i = 0; i < soundSlots.size(); i++) {
 				soundSlots[i].active = 17; // Set all slots to "lizard"
 			};
 		}
+		int drop_down_active = -1;
 
 		//Buttons and dropdowns and sounds logic
 		for (int i = 0; i < soundSlots.size(); i++) {
-				int col = i % 5;
-				int row = i / 5;
+			int col = i % 5;
+			int row = i / 5;
 
     			float x = 50 + row + row * 240;
     			float y = 50 + col * 60;
 
-    			if (GuiDropdownBox((Rectangle){x, y, 100, 40}, selection_string, &soundSlots[i].active, soundSlots[i].dropdown)) {
-        			soundSlots[i].dropdown = !soundSlots[i].dropdown;
-    			}
+			if (soundSlots[i].dropdown)
+				drop_down_active = i;
+			else
+				if (GuiDropdownBox((Rectangle){x, y, 100, 40},
+						   selection_string,
+						   &soundSlots[i].active,
+						   soundSlots[i].dropdown)) {
+					soundSlots[i].dropdown = !soundSlots[i].dropdown;
+				}
 
     			if (GuiButton((Rectangle){x + 110, y, 100, 40}, sounds[soundSlots[i].active].label.c_str())) {
         			PlaySound(sounds[soundSlots[i].active].sound);
     			}
 		}
+		if (drop_down_active != -1)
+		{
+			int col = drop_down_active % 5;
+			int row = drop_down_active / 5;
+			float x = 50 + row + row * 240;
+			float y = 50 + col * 60;
+			if (GuiDropdownBox((Rectangle){x, y, 100, 40},
+					   selection_string,
+					   &soundSlots[drop_down_active].active,
+					   soundSlots[drop_down_active].dropdown)) {
+				soundSlots[drop_down_active].dropdown = !soundSlots[drop_down_active].dropdown;
+			}
+			drop_down_active = -1;
+		}
 		if (GuiCheckBox((Rectangle){660, 350, 20, 20}, "Aimee Mode", &aimeemode)) {
 			// Toggle Aimee Mode
 		}
+
+		//end sound effect portion
+		//begin music portion
+
+
+		if (GuiButton((Rectangle){50, 400, 100, 40}, "Classical")) {
+			std::cout << "Pressed!" << std::endl;
+			if (!music_started)
+			{
+				music_started = true;
+				PlayMusicStream(music);
+			}
+			else
+				if (IsMusicStreamPlaying(music))
+					PauseMusicStream(music);
+				else
+					ResumeMusicStream(music);
+		}
+		GuiSlider((Rectangle){ 50, 450, 200, 20 }, "0%", "100%", &music_volume, 0.0f, 1.0f);
+		SetMusicVolume(music, music_volume);
 
 		EndDrawing();
 	}
